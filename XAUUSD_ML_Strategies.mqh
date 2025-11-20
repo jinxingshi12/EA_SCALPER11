@@ -254,6 +254,7 @@ bool CXAUUSD_MLStrategies::GenerateSmartMoneySignal(const SMarketAnalysis &analy
     signal.confidence = orderBlockStrength * 0.4 + (1.0 - liquidityDistance) * 0.3 + analysis.confidence * 0.3;
     signal.strategy = "ICT Smart Money";
     signal.timestamp = TimeCurrent();
+    signal.analysis = analysis;
     
     if(signalType == SIGNAL_BUY)
     {
@@ -288,7 +289,7 @@ bool CXAUUSD_MLStrategies::GenerateMLScalpingSignal(const SMarketAnalysis &analy
     
     // Current market state
     double currentPrice = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
-    double spread = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
+    double spread = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
     
     // Ensure spread is acceptable for scalping
     if(spread > analysis.currentData.atr_14 * 0.3) return false;
@@ -301,6 +302,7 @@ bool CXAUUSD_MLStrategies::GenerateMLScalpingSignal(const SMarketAnalysis &analy
     signal.confidence = MathAbs(shortTermPrediction) * 0.6 + analysis.confidence * 0.4;
     signal.strategy = "ML Adaptive Scalping";
     signal.timestamp = TimeCurrent();
+    signal.analysis = analysis;
     
     // Tight scalping stops and targets
     signal.stopLoss = CalculateScalpingStopLoss(currentPrice, signalType);
@@ -354,6 +356,7 @@ bool CXAUUSD_MLStrategies::GenerateVolatilityBreakoutSignal(const SMarketAnalysi
     signal.confidence = analysis.confidence * 0.5 + (analysis.volatility / 20.0) * 0.5;
     signal.strategy = "Volatility Breakout";
     signal.timestamp = TimeCurrent();
+    signal.analysis = analysis;
     
     // Wide stops for volatility breakout
     if(signalType == SIGNAL_BUY)
@@ -389,7 +392,7 @@ bool CXAUUSD_MLStrategies::ValidateScalpingConditions(const SMarketAnalysis &ana
     }
     
     // Check spread
-    double spread = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD);
+    double spread = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD);
     if(spread > 5) return false; // Max 5 point spread for scalping
     
     // Check existing positions

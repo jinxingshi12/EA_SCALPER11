@@ -45,15 +45,15 @@ input bool     ShowDecisionProcess = true;                   // Show Decision Pr
 input color    InterfaceColor = clrCyan;                     // Interface Color
 
 //--- Global variables
-CXAUUSD_MLCore*        g_mlCore;
-CXAUUSD_MLStrategies*  g_strategies;
-CXAUUSD_MLRisk*        g_riskManager;
-CXAUUSD_MLVisual*      g_visualInterface;
+CXAUUSD_MLCore*        g_mlCore = NULL;
+CXAUUSD_MLStrategies*  g_strategies = NULL;
+CXAUUSD_MLRisk*        g_riskManager = NULL;
+CXAUUSD_MLVisual*      g_visualInterface = NULL;
 
-datetime               g_lastMLUpdate;
-double                 g_dailyPnL;
-double                 g_maxDailyDrawdown;
-bool                   g_tradingEnabled;
+datetime               g_lastMLUpdate = 0;
+double                 g_dailyPnL = 0.0;
+double                 g_maxDailyDrawdown = 0.0;
+bool                   g_tradingEnabled = false;
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |

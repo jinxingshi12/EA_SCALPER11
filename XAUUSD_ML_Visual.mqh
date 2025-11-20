@@ -61,7 +61,7 @@ private:
     
     // Chart Objects
     string            m_objectPrefix;
-    int               m_chartID;
+    long              m_chartID;
     
     // Animation and Updates
     datetime          m_lastUpdateTime;
