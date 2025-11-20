@@ -88,6 +88,7 @@ struct STradeSignal
     double            confidence;
     string            strategy;
     datetime          timestamp;
+    SMarketAnalysis   analysis;
 };
 
 //+------------------------------------------------------------------+
@@ -149,6 +150,10 @@ public:
     // Latency Optimization
     bool             ValidatePreStopConditions(const STradeSignal &signal);
     bool             ExecuteTradeWithLatencyOptimization(const STradeSignal &signal, double lotSize);
+
+    // Execution validation helpers
+    bool             ValidateExecutionPrice(ulong orderTicket, double expectedPrice);
+    void             ClosePosition(ulong orderTicket);
     
 private:
     // Technical Analysis
@@ -534,8 +539,42 @@ bool CXAUUSD_MLCore::ExecuteTradeWithLatencyOptimization(const STradeSignal &sig
             return false;
         }
     }
-    
+
     return result;
+}
+
+//+------------------------------------------------------------------+
+//| Validate execution price against expected entry                  |
+//+------------------------------------------------------------------+
+bool CXAUUSD_MLCore::ValidateExecutionPrice(ulong orderTicket, double expectedPrice)
+{
+    // Ensure the order exists in history (for netting accounts) or currently active
+    if(!HistoryOrderSelect(orderTicket))
+    {
+        if(!OrderSelect(orderTicket))
+            return true; // If we cannot verify, allow execution by default
+    }
+
+    double executedPrice = HistoryOrderGetDouble(orderTicket, ORDER_PRICE_OPEN);
+    if(executedPrice <= 0)
+    {
+        executedPrice = OrderGetDouble(ORDER_PRICE_OPEN);
+    }
+
+    double deviationPips = MathAbs(executedPrice - expectedPrice) / Point;
+    return deviationPips <= m_slippageTolerance;
+}
+
+//+------------------------------------------------------------------+
+//| Close a position by order ticket                                 |
+//+------------------------------------------------------------------+
+void CXAUUSD_MLCore::ClosePosition(ulong orderTicket)
+{
+    if(orderTicket == 0)
+        return;
+
+    CTrade trade;
+    trade.PositionClose(orderTicket);
 }
 
 //+------------------------------------------------------------------+
