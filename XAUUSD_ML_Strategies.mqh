@@ -289,7 +289,7 @@ bool CXAUUSD_MLStrategies::GenerateMLScalpingSignal(const SMarketAnalysis &analy
     
     // Current market state
     double currentPrice = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
-    double spread = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
+    double spread = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
     
     // Ensure spread is acceptable for scalping
     if(spread > analysis.currentData.atr_14 * 0.3) return false;
@@ -392,7 +392,7 @@ bool CXAUUSD_MLStrategies::ValidateScalpingConditions(const SMarketAnalysis &ana
     }
     
     // Check spread
-    double spread = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD);
+    double spread = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD);
     if(spread > 5) return false; // Max 5 point spread for scalping
     
     // Check existing positions

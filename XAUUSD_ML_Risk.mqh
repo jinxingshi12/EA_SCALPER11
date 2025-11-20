@@ -210,7 +210,14 @@ double CXAUUSD_MLRisk::CalculateOptimalLotSize(const STradeSignal &signal)
     double adjustedLotSize = baseLotSize * dynamicRisk;
     
     // Apply volatility adjustment
-    double currentATR = iATR(_Symbol, PERIOD_M15, 14);
+    double currentATR = 0.0;
+    double atrBuffer[1];
+    int atrHandle = iATR(_Symbol, PERIOD_M15, 14);
+    if(CopyBuffer(atrHandle, 0, 0, 1, atrBuffer) > 0)
+    {
+        currentATR = atrBuffer[0];
+    }
+
     double volatilityMultiplier = GetVolatilityAdjustedRisk(1.0, currentATR);
     adjustedLotSize *= volatilityMultiplier;
     

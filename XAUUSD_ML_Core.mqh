@@ -249,7 +249,7 @@ bool CXAUUSD_MLCore::AnalyzeMarket(SMarketAnalysis &analysis)
     currentData.close = iClose(_Symbol, PERIOD_M15, 0);
     currentData.volume = iVolume(_Symbol, PERIOD_M15, 0);
     currentData.timestamp = iTime(_Symbol, PERIOD_M15, 0);
-    currentData.spread = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
+    currentData.spread = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) * Point;
     
     // Calculate technical indicators
     if(!CalculateTechnicalIndicators(currentData))
@@ -514,7 +514,7 @@ bool CXAUUSD_MLCore::ExecuteTradeWithLatencyOptimization(const STradeSignal &sig
 {
     CTrade trade;
     trade.SetExpertMagicNumber(12345);
-    trade.SetDeviationInPoints(m_slippageTolerance);
+    trade.SetDeviationInPoints((ulong)MathRound(m_slippageTolerance));
     
     // For high latency, use market orders with immediate validation
     bool result = false;
